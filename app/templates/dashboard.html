@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="grid grid-cols-3 gap-6 mb-8">
+    <div class="bg-green-500 text-white p-6 rounded shadow">
+        <h3 class="text-lg">Receitas</h3>
+        <p class="text-2xl font-bold">R$ {{ "%.2f"|format(income) }}</p>
+    </div>
+
+    <div class="bg-red-500 text-white p-6 rounded shadow">
+        <h3 class="text-lg">Despesas</h3>
+        <p class="text-2xl font-bold">R$ {{ "%.2f"|format(expense) }}</p>
+    </div>
+
+    <div class="bg-blue-500 text-white p-6 rounded shadow">
+        <h3 class="text-lg">Saldo</h3>
+        <p class="text-2xl font-bold">R$ {{ "%.2f"|format(balance) }}</p>
+    </div>
+</div>
+
+<div class="bg-white p-6 rounded shadow mb-8">
+    <canvas id="categoryChart"
+        data-labels='{{ labels | tojson }}'
+        data-values='{{ values | tojson }}'>
+    </canvas>
+</div>
+
+<div class="bg-white p-6 rounded shadow">
+    <h3 class="text-xl mb-4 font-bold">Nova Transação</h3>
+
+    <form method="post" action="/add" class="grid grid-cols-4 gap-4">
+        <input name="description" placeholder="Descrição" class="p-2 border rounded" required>
+        <input name="category" placeholder="Categoria" class="p-2 border rounded" required>
+        <input name="amount" type="number" step="0.01" placeholder="Valor" class="p-2 border rounded" required>
+
+        <select name="type" class="p-2 border rounded">
+            <option value="income">Receita</option>
+            <option value="expense">Despesa</option>
+        </select>
+
+        <button class="col-span-4 bg-indigo-600 text-white p-2 rounded hover:bg-indigo-700">
+            Adicionar
+        </button>
+    </form>
+
+    <div class="bg-white p-6 rounded shadow mt-8">
+    <h3 class="text-xl font-bold mb-4">Transações</h3>
+
+    <table class="w-full text-left">
+        <thead>
+            <tr class="border-b">
+                <th>Descrição</th>
+                <th>Categoria</th>
+                <th>Tipo</th>
+                <th>Valor</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for t in transactions %}
+            <tr class="border-b">
+                <td>{{ t.description }}</td>
+                <td>{{ t.category }}</td>
+                <td>{{ t.type }}</td>
+                <td>R$ {{ "%.2f"|format(t.amount) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const chartElement = document.getElementById("categoryChart");
+
+    const labels = JSON.parse(chartElement.dataset.labels || "[]");
+    const values = JSON.parse(chartElement.dataset.values || "[]");
+
+    if (labels.length > 0) {
+        new Chart(chartElement, {
+            type: "doughnut",
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: values
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: "bottom"
+                    }
+                }
+            }
+        });
+    }
+
+});
+</script>
+
+{% endblock %}
