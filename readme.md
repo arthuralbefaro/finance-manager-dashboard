@@ -1,4 +1,35 @@
-# Finance Manager Pro
+# Finance Manager 
+
+Financial management system built with FastAPI.
+
+## Features
+
+- User authentication
+- Income and expense tracking
+- Financial dashboard
+- Expense chart by category
+
+## Technologies
+
+- FastAPI
+- SQLAlchemy
+- MySQL
+- Jinja2
+- Chart.js
+- TailwindCSS
+
+## Preview
+
+![Dashboard](./dashboard.png)
+
+## How to run
+
+pip install -r requirements.txt  
+uvicorn app.main:app --reload
+
+--------------------------------------------------------------------------------------------------------------------
+
+# Finance Manager
 
 Sistema de controle financeiro desenvolvido com:
 
